@@ -8,9 +8,16 @@ import retrofit2.http.GET
 interface GadsService {
     @GET("api/hours")
     fun learningLeaders(): Call<List<Learner?>?>?
+
+    @GET("api/skilliq")
+    fun skillIQLeaders(): Call<List<SkillIQ?>?>?
 }
 
 class Learner(val name: String, val hours: Int, val country: String, val badgeUrl: String) {
+
+}
+
+class SkillIQ(val name: String, val score: Int, val country: String, val badgeUrl: String) {
 
 }
 
