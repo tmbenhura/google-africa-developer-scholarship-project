@@ -13,4 +13,12 @@ class GadsServiceTest {
         assertNotNull(learners)
         assertNotEquals(learners?.size, 0)
     }
+
+    @Test
+    fun gadsService_returnsSkillIQLeaders() {
+        val leaders = createGadsService().skillIQLeaders()?.execute()?.body()
+
+        assertNotNull(leaders)
+        assertNotEquals(leaders?.size, 0)
+    }
 }
