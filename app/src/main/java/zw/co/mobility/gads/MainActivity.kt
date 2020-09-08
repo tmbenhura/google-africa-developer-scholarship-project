@@ -1,13 +1,13 @@
 package zw.co.mobility.gads
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import zw.co.mobility.gads.ui.main.SectionsPagerAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +25,11 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
+        }
+
+        val submitProject: View = findViewById(R.id.submit_project)
+        submitProject.setOnClickListener { view ->
+            startActivity(Intent(this, ProjectSubmissionActivity::class.java))
         }
     }
 }
