@@ -10,6 +10,7 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadows.ShadowLooper
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -32,6 +33,8 @@ class SplashActivityTest {
             .start()
             .resume()
             .get()
+
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
         val expectedIntent = Intent(activity, MainActivity::class.java)
         val actual: Intent = shadowOf(RuntimeEnvironment.application).getNextStartedActivity()
