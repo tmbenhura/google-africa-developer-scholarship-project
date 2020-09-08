@@ -1,6 +1,7 @@
 package zw.co.mobility.gads
 
 import android.content.Intent
+import android.widget.ImageView
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -35,5 +36,13 @@ class SplashActivityTest {
         val expectedIntent = Intent(activity, MainActivity::class.java)
         val actual: Intent = shadowOf(RuntimeEnvironment.application).getNextStartedActivity()
         assertEquals(expectedIntent.component, actual.component)
+    }
+
+    @Test
+    fun splash_showsLogo() {
+        val activity = Robolectric.setupActivity(SplashActivity::class.java)
+        val imageView = activity.findViewById<ImageView>(R.id.logo)
+
+        assertEquals(R.drawable.ic_logo, shadowOf(imageView.drawable).createdFromResId)
     }
 }
