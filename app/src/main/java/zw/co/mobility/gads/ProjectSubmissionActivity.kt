@@ -9,19 +9,27 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import zw.co.mobility.gads.ui.login.LoggedInUserView
-import zw.co.mobility.gads.ui.login.LoginViewModel
-import zw.co.mobility.gads.ui.login.LoginViewModelFactory
+import zw.co.mobility.gads.ui.submission.SubmissionViewModel
+import zw.co.mobility.gads.ui.submission.SubmissionViewModelFactory
+import zw.co.mobility.gads.ui.submission.dialog.FailureDialogFragment
+import zw.co.mobility.gads.ui.submission.dialog.PromptDialogCallback
+import zw.co.mobility.gads.ui.submission.dialog.PromptDialogFragment
+import zw.co.mobility.gads.ui.submission.dialog.SuccessDialogFragment
 
 class ProjectSubmissionActivity : AppCompatActivity() {
 
-    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var submissionViewModel: SubmissionViewModel
+    private lateinit var firstName: EditText
+    private lateinit var lastName: EditText
+    private lateinit var emailAddress: EditText
+    private lateinit var projectUrl: EditText
+    private lateinit var loading: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,90 +40,118 @@ class ProjectSubmissionActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
 
-        val username = findViewById<EditText>(R.id.username)
-        val password = findViewById<EditText>(R.id.password)
-        val login = findViewById<Button>(R.id.login)
-        val loading = findViewById<ProgressBar>(R.id.loading)
+        firstName = findViewById<EditText>(R.id.first_name)
+        lastName = findViewById<EditText>(R.id.last_name)
+        emailAddress = findViewById<EditText>(R.id.email_address)
+        projectUrl = findViewById<EditText>(R.id.project_url)
+        loading = findViewById<ProgressBar>(R.id.loading)
+        val submit = findViewById<Button>(R.id.submit)
 
-        loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+        submissionViewModel = ViewModelProviders.of(this, SubmissionViewModelFactory())
+            .get(SubmissionViewModel::class.java)
 
-        loginViewModel.loginFormState.observe(this@ProjectSubmissionActivity, Observer {
-            val loginState = it ?: return@Observer
+        submissionViewModel.submissionFormState.observe(this@ProjectSubmissionActivity, Observer {
+            val submissionFormState = it ?: return@Observer
 
-            // disable login button unless both username / password is valid
-            login.isEnabled = loginState.isDataValid
+            // Disable submit button unless the form is valid
+            submit.isEnabled = submissionFormState.isDataValid
 
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
+            if (submissionFormState.firstNameError != null) {
+                firstName.error = getString(submissionFormState.firstNameError)
             }
-            if (loginState.passwordError != null) {
-                password.error = getString(loginState.passwordError)
+            if (submissionFormState.lastNameError != null) {
+                lastName.error = getString(submissionFormState.lastNameError)
+            }
+            if (submissionFormState.emailAddressError != null) {
+                emailAddress.error = getString(submissionFormState.emailAddressError)
+            }
+            if (submissionFormState.projectUrlError != null) {
+                projectUrl.error = getString(submissionFormState.projectUrlError)
             }
         })
 
-        loginViewModel.loginResult.observe(this@ProjectSubmissionActivity, Observer {
-            val loginResult = it ?: return@Observer
+        submissionViewModel.submissionResult.observe(this@ProjectSubmissionActivity, Observer {
+            val submissionResult = it ?: return@Observer
 
             loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
+            if (submissionResult.error != null) {
+                showSubmissionFailed(submissionResult.error)
             }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
+            if (submissionResult.success != null) {
+                showSubmissionSucceeded(submissionResult.success)
             }
             setResult(Activity.RESULT_OK)
-
-            //Complete and destroy login activity once successful
-            finish()
         })
 
-        username.afterTextChanged {
-            loginViewModel.loginDataChanged(
-                username.text.toString(),
-                password.text.toString()
-            )
+        firstName.afterTextChanged {
+            submissionChanged()
         }
 
-        password.apply {
+        lastName.afterTextChanged {
+            submissionChanged()
+        }
+
+        emailAddress.afterTextChanged {
+            submissionChanged()
+        }
+
+        projectUrl.apply {
             afterTextChanged {
-                loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
-                )
+                submissionChanged()
             }
 
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.login(
-                            username.text.toString(),
-                            password.text.toString()
-                        )
+                        promptBeforeSubmission()
                 }
                 false
             }
 
-            login.setOnClickListener {
-                loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
+            submit.setOnClickListener {
+                promptBeforeSubmission()
             }
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            applicationContext,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
+    private fun submissionChanged() {
+        submissionViewModel.submissionDataChanged(
+            firstName.text.toString(),
+            lastName.text.toString(),
+            emailAddress.text.toString(),
+            projectUrl.text.toString()
+        )
     }
 
-    private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+    private fun promptBeforeSubmission() {
+        val dialogFragment = PromptDialogFragment(R.string.submission_prompt, object : PromptDialogCallback{
+            override fun onAccept() {
+                (supportFragmentManager.findFragmentByTag("promptDialog") as DialogFragment).dismiss()
+
+                loading.visibility = View.VISIBLE
+                submissionViewModel.submit(
+                    firstName.text.toString(),
+                    lastName.text.toString(),
+                    emailAddress.text.toString(),
+                    projectUrl.text.toString())
+            }
+
+            override fun onClose() {
+                (supportFragmentManager.findFragmentByTag("promptDialog") as DialogFragment).dismiss()
+            }
+
+        })
+        dialogFragment.show(supportFragmentManager, "promptDialog")
+    }
+
+    private fun showSubmissionSucceeded(@StringRes errorString: Int) {
+        val dialogFragment = SuccessDialogFragment()
+        dialogFragment.show(supportFragmentManager, "successDialog")
+    }
+
+    private fun showSubmissionFailed(@StringRes errorString: Int) {
+        val dialogFragment = FailureDialogFragment()
+        dialogFragment.show(supportFragmentManager, "failureDialog")
     }
 }
 

@@ -45,39 +45,70 @@
         app:layout_anchorGravity="center">
 
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/first_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/rounded_text_field_background"
+            android:hint="@string/prompt_first_name"
+            android:inputType="text"
+            android:selectAllOnFocus="true"
+            app:layout_constraintEnd_toStartOf="@+id/last_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <EditText
+            android:id="@+id/last_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/rounded_text_field_background"
+            android:hint="@string/prompt_last_name"
+            android:inputType="text"
+            android:selectAllOnFocus="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/first_name"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
+        <EditText
+            android:id="@+id/email_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="48dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/rounded_text_field_background"
-            android:hint="@string/prompt_email"
+            android:hint="@string/prompt_email_address"
             android:inputType="textEmailAddress"
             android:selectAllOnFocus="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/last_name" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/project_url"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="48dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/rounded_text_field_background"
-            android:hint="@string/prompt_password"
-            android:imeActionLabel="@string/action_sign_in_short"
+            android:hint="@string/prompt_project_url"
+            android:imeActionLabel="@string/action_submit_project"
             android:imeOptions="actionDone"
-            android:inputType="textPassword"
+            android:inputType="textUri"
             android:selectAllOnFocus="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username" />
+            app:layout_constraintTop_toBottomOf="@+id/email_address" />
 
         <Button
-            android:id="@+id/login"
+            android:id="@+id/submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -87,12 +118,12 @@
             android:layout_marginBottom="64dp"
             android:background="@drawable/rounded_orange_button_background"
             android:enabled="false"
-            android:text="@string/action_sign_in"
+            android:text="@string/action_submit_project"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password"
+            app:layout_constraintTop_toBottomOf="@+id/project_url"
             app:layout_constraintVertical_bias="0.2" />
 
         <ProgressBar
@@ -106,8 +137,8 @@
             android:layout_marginBottom="64dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/password"
-            app:layout_constraintStart_toStartOf="@+id/password"
+            app:layout_constraintEnd_toEndOf="@+id/project_url"
+            app:layout_constraintStart_toStartOf="@+id/project_url"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.3" />
 
@@ -131,7 +162,7 @@
             android:layout_width="0dp"
             android:layout_height="2dip"
             android:layout_marginBottom="25dp"
-            app:layout_constraintBottom_toTopOf="@+id/username"
+            app:layout_constraintBottom_toTopOf="@+id/first_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView"

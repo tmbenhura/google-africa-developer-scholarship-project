@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/minWidth"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dip">
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="40dip"
+        android:layout_height="40dp"
+        android:layout_gravity="right|end"
+        app:srcCompat="@drawable/ic_close" />
+
+    <TextView
+        android:id="@+id/prompt"
+        android:layout_width="300dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dip"
+        android:layout_marginBottom="40dip"
+        android:gravity="center"
+        android:minWidth="300dip"
+        android:text="@string/submission_prompt"
+        android:textAppearance="@style/DialogText" />
+
+    <Button
+        android:id="@+id/accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dip"
+        android:background="@drawable/rounded_orange_outlined_button_background"
+        android:minWidth="120dip"
+        android:text="@string/yes"
+        android:textColor="@color/orange" />
+</LinearLayout>
