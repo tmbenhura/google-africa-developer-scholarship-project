@@ -17,10 +17,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import zw.co.mobility.gads.ui.submission.SubmissionViewModel
 import zw.co.mobility.gads.ui.submission.SubmissionViewModelFactory
-import zw.co.mobility.gads.ui.submission.dialog.FailureDialogFragment
+import zw.co.mobility.gads.ui.submission.dialog.ImageDialogFragment
 import zw.co.mobility.gads.ui.submission.dialog.PromptDialogCallback
 import zw.co.mobility.gads.ui.submission.dialog.PromptDialogFragment
-import zw.co.mobility.gads.ui.submission.dialog.SuccessDialogFragment
 
 class ProjectSubmissionActivity : AppCompatActivity() {
 
@@ -144,13 +143,13 @@ class ProjectSubmissionActivity : AppCompatActivity() {
         dialogFragment.show(supportFragmentManager, "promptDialog")
     }
 
-    private fun showSubmissionSucceeded(@StringRes errorString: Int) {
-        val dialogFragment = SuccessDialogFragment()
+    private fun showSubmissionSucceeded(@StringRes successString: Int) {
+        val dialogFragment = ImageDialogFragment(R.drawable.ic_success, successString)
         dialogFragment.show(supportFragmentManager, "successDialog")
     }
 
     private fun showSubmissionFailed(@StringRes errorString: Int) {
-        val dialogFragment = FailureDialogFragment()
+        val dialogFragment = ImageDialogFragment(R.drawable.ic_failure, errorString)
         dialogFragment.show(supportFragmentManager, "failureDialog")
     }
 }

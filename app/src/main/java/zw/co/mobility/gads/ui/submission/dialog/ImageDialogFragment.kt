@@ -6,16 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import zw.co.mobility.gads.R
 
-class SuccessDialogFragment : DialogFragment() {
+class ImageDialogFragment(@DrawableRes val imageRes: Int, @StringRes val titleRes: Int) : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.dialog_success, container, false)
+        val layout = inflater.inflate(R.layout.dialog_image_with_prompt, container, false) as ViewGroup
+        val image = layout.findViewById<ImageView>(R.id.image)
+        image.setImageDrawable(ContextCompat.getDrawable(image.context, imageRes))
+
+        val prompt = layout.findViewById<TextView>(R.id.prompt)
+        prompt.setText(titleRes)
+
+        return  layout
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
